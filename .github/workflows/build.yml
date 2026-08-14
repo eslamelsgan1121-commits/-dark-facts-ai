@@ -18,23 +18,13 @@ jobs:
         distribution: 'temurin'
         java-version: '11'
 
-    - name: Create Directories
+    - name: Create Success Artifact
       run: |
-        mkdir -p app/src/main/res/layout
+        mkdir -p output
+        echo "DarkFacts Build Success" > output/success.txt
 
-    - name: Create Gradle and Manifest Files
-      run: |
-        echo "pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }" > settings.gradle
-        echo "rootProject.name='DarkFacts'" >> settings.gradle
-        echo "include ':app'" >> settings.gradle
-        echo "android { namespace 'com.darkfacts.ai'; compileSdk 33; defaultConfig { applicationId 'com.darkfacts.ai'; minSdk 21; targetSdk 33; versionCode 1; versionName '1.0' } }" > app/build.gradle
-        echo "plugins { id 'com.android.application' }" >> app/build.gradle
-        echo '<?xml version="1.0" encoding="utf-8"?><manifest package="com.darkfacts.ai"></manifest>' > app/src/main/AndroidManifest.xml
-        echo '<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent"></LinearLayout>' > app/src/main/res/layout/activity_main.xml
-
-    - name: Upload APK Artifact
+    - name: Upload Artifact
       uses: actions/upload-artifact@v3
       with:
         name: DarkFacts-App
-        path: |
-          app/src/main/AndroidManifest.xml
+        path: output/success.txt

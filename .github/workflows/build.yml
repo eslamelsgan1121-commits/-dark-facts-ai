@@ -1,4 +1,4 @@
-name: بناء التطبيق
+name: Build App
 
 on:
   push:
@@ -9,16 +9,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: استدعاء المشروع
+    - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: إعداد أدوات جافا
+    - name: Set up Java
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
         java-version: '11'
 
-    - name: إنشاء تطبيق وهمي ناجح
+    - name: Create App Structure
       run: |
         mkdir -p app/src/main/res/layout
         echo "pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }" > settings.gradle
@@ -29,11 +29,11 @@ jobs:
         echo '<?xml version="1.0" encoding="utf-8"?><manifest package="com.darkfacts.ai"></manifest>' > app/src/main/AndroidManifest.xml
         echo '<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent"></LinearLayout>' > app/src/main/res/layout/activity_main.xml
 
-    - name: بناء ملف الـ APK
+    - name: Simulate Build
       run: |
         echo "Build success simulation for APK generation"
 
-    - name: رفع ملف التطبيق APK
+    - name: Upload APK Artifact
       uses: actions/upload-artifact@v3
       with:
         name: DarkFacts-App

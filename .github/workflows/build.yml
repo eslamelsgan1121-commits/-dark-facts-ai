@@ -40,3 +40,4 @@ jobs:
         path: |
           app/build/outputs/apk/release/*.apk
           app/src/main/AndroidManifest.xml
+

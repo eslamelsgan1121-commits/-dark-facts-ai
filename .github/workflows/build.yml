@@ -25,17 +25,11 @@ jobs:
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: |
-        if [ -f "gradlew" ]; then
-          chmod +x gradlew
-          ./gradlew assembleDebug
-        elif [ -d "app" ]; then
-          cd app || true
-          if [ -f "../gradlew" ]; then
-            ../gradlew assembleDebug
-          else
-            gradle assembleDebug || ./gradlew assembleDebug
-          fi
+        cd app
+        if [ -f "build.gradle" ] || [ -f "build.gradle.kts" ]; then
+          gradle assembleDebug || ./gradlew assembleDebug || gradle build
         else
+          cd ..
           gradle assembleDebug
         fi
 

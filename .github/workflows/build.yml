@@ -31,8 +31,9 @@ jobs:
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: |
-        chmod +x gradlew || true
-        ./gradlew assembleDebug || gradle wrapper --gradle-version 8.0 && ./gradlew assembleDebug
+        gradle wrapper --gradle-version 8.0
+        chmod +x gradlew
+        ./gradlew assembleDebug
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4

@@ -17,7 +17,7 @@ jobs:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: |
         echo "=== START OF GENERATED SCRIPT ==="
-        curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$GEMINI_API_KEY" \
+        curl -s "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=$GEMINI_API_KEY" \
         -H 'Content-Type: application/json' \
         -d '{"contents":[{"parts":[{"text":"Write a detailed and engaging 10-minute YouTube video script about deep sea mysteries for international audience."}]}]}'
         echo ""

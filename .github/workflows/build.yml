@@ -18,21 +18,23 @@ jobs:
         python-version: '3.10'
 
     - name: Install Dependencies
-      run: pip install google-generativeai
+      run: pip install google-genai
 
     - name: Run Python Script
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: |
         python3 -c "
-        import google.generativeai as genai
+        from google import genai
         import os
         
-        genai.configure(api_key=os.environ['GEMINI_API_KEY'])
+        client = genai.Client(api_key=os.environ['GEMINI_API_KEY'])
         
         try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            response = model.generate_content('Write a short engaging YouTube script about deep sea mysteries.')
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents='Write a short engaging YouTube script about deep sea mysteries.'
+            )
             print('=== START OF GENERATED SCRIPT ===')
             print(response.text)
             print('=== END OF GENERATED SCRIPT ===')
@@ -51,10 +53,8 @@ jobs:
         if [ -f "gradlew" ]; then
           chmod +x gradlew
           ./gradlew assembleDebug
-        elif [ -d "app" ] && [ -f "app/build.gradle" ]; then
-          echo "Gradle files are in subfolder, skipping root build for now."
         else
-          echo "No gradlew found, skipping build."
+          echo "Skipping gradle build"
         fi
 
     - name: Upload APK

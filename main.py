@@ -1,9 +1,7 @@
 import os
-import google.generativeai as genai
+from google import genai
 
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
-
-model = genai.GenerativeModel('gemini-1.5-flash')
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 prompt = """
 Act as a professional YouTube content creator for a channel called 'Daily Dark Facts'.
@@ -21,7 +19,10 @@ Structure your script strictly as follows:
 At the very end of your response, provide 2 separate 30-second Short scripts (Hooks) designed to make viewers click the long video.
 """
 
-response = model.generate_content(prompt)
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents=prompt,
+)
 
 print("=== DAILY DARK FACTS SCRIPT GENERATED ===")
 print(response.text)

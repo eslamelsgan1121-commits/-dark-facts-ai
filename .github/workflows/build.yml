@@ -18,6 +18,9 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
     - name: Build with Gradle
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -25,7 +28,7 @@ jobs:
         if [ -f "gradlew" ]; then
           chmod +x gradlew
           ./gradlew assembleDebug
-        elif [ -f "app/build.gradle" ] || [ -d "app" ]; then
+        elif [ -d "app" ]; then
           cd app || true
           if [ -f "../gradlew" ]; then
             ../gradlew assembleDebug

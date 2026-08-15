@@ -20,7 +20,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install google-generativeai
+        pip install google-genai
 
     - name: Run main.py script
       env:

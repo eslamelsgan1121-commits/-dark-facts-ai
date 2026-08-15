@@ -18,24 +18,35 @@ jobs:
         python-version: '3.10'
 
     - name: Install Dependencies
-      run: pip install google-generativeai
+      run: pip install requests
 
     - name: Run Python Script
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: |
         python3 -c "
-        import google.generativeai as genai
+        import urllib.request
+        import json
         import os
+
+        api_key = os.environ.get('GEMINI_API_KEY')
+        url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}'
+        headers = {'Content-Type': 'application/json'}
         
-        genai.configure(api_key=os.environ['GEMINI_API_KEY'])
-        
+        data = {
+            'contents': [{
+                'parts': [{'text': 'Write a short engaging YouTube script about deep sea mysteries.'}]
+            }]
+        }
+
+        req = urllib.request.Request(url, data=json.dumps(data).encode('utf-8'), headers=headers, method='POST')
+
         try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            response = model.generate_content('Write a short engaging YouTube script about deep sea mysteries.')
-            print('=== START OF GENERATED SCRIPT ===')
-            print(response.text)
-            print('=== END OF GENERATED SCRIPT ===')
+            with urllib.request.urlopen(req) as response:
+                res = json.loads(response.read().decode('utf-8'))
+                print('=== START OF GENERATED SCRIPT ===')
+                print(res['candidates'][0]['content']['parts'][0]['text'])
+                print('=== END OF GENERATED SCRIPT ===')
         except Exception as e:
             print('Error occurred:', e)
         "

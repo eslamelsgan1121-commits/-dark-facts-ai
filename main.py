@@ -1,13 +1,13 @@
 import os
-import google.generativeai as genai
+from google import genai
 
-API_KEY = os.environ.get("GEMINI_API_KEY")
-genai.configure(api_key=API_KEY)
-
-model = genai.GenerativeModel('gemini-1.5-flash')
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 def generate_script(idea):
-    response = model.generate_content(f"Write a professional, dark, and mysterious YouTube script for the topic: {idea}. Target: International audience.")
+    response = client.models.generate_content(
+        model='gemini-1.5-flash',
+        contents=f"Write a professional, dark, and mysterious YouTube script for the topic: {idea}. Target: International audience."
+    )
     return response.text
 
 if __name__ == "__main__":

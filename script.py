@@ -1,29 +1,28 @@
 import os
-import requests
+import urllib.request
 import json
 
-def generate_script():
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print("Error: GEMINI_API_KEY is not set.")
-        return
+api_key = os.environ.get('GEMINI_API_KEY')
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-    headers = {'Content-Type': 'application/json'}
-    payload = {
-        "contents": [{
-            "parts":[{"text": "Act as a professional YouTube scriptwriter for Daily Dark Facts. Write a mysterious script about Deep Sea Mysteries, Pyramid Secrets, Pharaohs Curse, Space Mysteries, or Midnight Thoughts. Provide the result in English."}]
-        }]
-    }
+if not api_key:
+    print("Error: GEMINI_API_KEY is not set.")
+    exit(1)
 
-    try:
-        response = requests.post(url, headers=headers, json=payload)
-        response.raise_for_status()
-        data = response.json()
-        print("Script successfully generated!")
-        print(data['candidates'][0]['content']['parts'][0]['text'])
-    except Exception as e:
-        print(f"System Error: {e}")
+url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+headers = {'Content-Type': 'application/json'}
 
-if __name__ == "__main__":
-    generate_script()
+data = {
+    "contents": [{
+        "parts": [{"text": "Write a short, engaging YouTube script for Daily Dark Facts about deep sea mysteries. Output only the script text."}]
+    }]
+}
+
+req = urllib.request.Request(url, data=json.dumps(data).encode('utf-8'), headers=headers, method='POST')
+
+try:
+    with urllib.request.urlopen(req) as response:
+        res = json.loads(response.read().decode('utf-8'))
+        script_text = res['candidates'][0]['content']['parts'][0]['text']
+        print(script_text)
+except Exception as e:
+    print(f"Error: {e}")

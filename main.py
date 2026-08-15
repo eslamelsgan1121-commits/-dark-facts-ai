@@ -4,20 +4,25 @@ from google import genai
 client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 prompt = """
-Act as an expert YouTube automated scriptwriter and channel growth manager for a global audience, specializing in dark mysteries, ocean secrets, ancient Egyptian hidden chambers, space mysteries, and pre-sleep anomalous thoughts. 
+Act as a professional YouTube content creator for a channel called 'Daily Dark Facts'.
+Your goal is to write a deep, engaging, and dark mystery script of 9 to 10 minutes in length.
+Choose ONE topic from: Ocean Mysteries, Ancient Egyptian Hidden Chambers, Space Secrets, or Pre-sleep Anomalous Thoughts.
 
-Write a complete YouTube video script of 9 to 10 minutes length in English. 
-Follow this strict structure:
-1. THE HOOK: Start the first 5 seconds with an extreme, shocking hook that forces the viewer to stay.
-2. CONTENT: Dive deep into one rotation topic: Ocean Mysteries, Pharaohs & Hidden Chambers, Space Secrets, or Pre-sleep Strange Thoughts.
-3. CALL TO ACTION (CTA): Insert a strong "Subscribe, hit the bell icon, and share" prompt immediately after the first 5-second hook, then repeat it right after every major thrilling revelation/climax in the middle, and once more just before the ending.
-4. SHORTS EXTRACTION: At the very end of your output, provide 2 separate 30-second Short scripts extracted directly from the best, most shocking hooks of this main script.
+Structure your script strictly as follows:
+1. THE HOOK (0:00-0:10): Start with an extremely shocking and mysterious fact that grabs attention immediately.
+2. CTA 1 (0:10-0:15): Clearly say: "Before we dive deeper into this mystery, make sure to subscribe, hit the bell icon, and share this video with your friends."
+3. MAIN CONTENT (0:15-9:00): Write a detailed, thrilling, and informative deep-dive. Use storytelling.
+4. CTA 2 (Middle of content): After a major thrilling revelation, insert: "This is getting crazy! If you're enjoying these facts, subscribe and join the family for more dark mysteries."
+5. CTA 3 (Near the end): Before the final conclusion, say: "We are almost at the end of this journey. Don't forget to subscribe and turn on notifications so you don't miss our next mystery!"
+6. CONCLUSION (9:00-10:00): Summarize and leave a final haunting thought.
+
+At the very end of your response, provide 2 separate 30-second Short scripts (Hooks) designed to make viewers click the long video.
 """
 
 response = client.models.generate_content(
-    model="gemini-2.5-flash",
+    model="gemini-1.5-flash",
     contents=prompt,
 )
 
-print("=== GENERATED SCRIPT FOR DAILY DARK FACTS ===")
+print("=== DAILY DARK FACTS SCRIPT GENERATED ===")
 print(response.text)

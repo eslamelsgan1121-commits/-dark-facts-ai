@@ -25,7 +25,15 @@ jobs:
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: |
-        gradle wrapper --gradle-version 8.5
+        # البحث عن المجلد الذي يحتوي على ملف الإعدادات وبناء التطبيق منه
+        PROJECT_DIR=$(find . -name "settings.gradle" -o -name "settings.gradle.kts" | head -n 1 | xargs dirname)
+        if [ -n "$PROJECT_DIR" ] && [ "$PROJECT_DIR" != "." ]; then
+          cd "$PROJECT_DIR"
+        fi
+        
+        if [ ! -f "gradlew" ]; then
+          gradle wrapper --gradle-version 8.5
+        fi
         chmod +x gradlew
         ./gradlew assembleDebug
 
@@ -33,4 +41,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: '**/app/build/outputs/apk/debug/app-debug.apk'

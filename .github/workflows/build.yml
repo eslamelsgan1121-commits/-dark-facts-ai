@@ -16,16 +16,10 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Fix Project Structure and Build
+      - name: Clean Build Files and Run
         run: |
-          # التأكد من وجود ملف إعدادات جذري لكي يتعرف Gradle على المشروع
-          if [ ! -f "settings.gradle" ] && [ ! -f "settings.gradle.kts" ]; then
-            echo "include ':app'" > settings.gradle
-          fi
-          
-          # توليد الـ wrapper بقوة ودون أخطاء
-          gradle wrapper --gradle-version 8.0
-          
-          # إعطاء الصلاحيات والبناء
+          rm -f settings.gradle settings.gradle.kts
+          echo "include ':app'" > settings.gradle
+          gradle wrapper
           chmod +x gradlew
-          ./gradlew app:assembleDebug
+          ./gradlew :app:assembleDebug

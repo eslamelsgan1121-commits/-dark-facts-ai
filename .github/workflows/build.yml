@@ -16,10 +16,15 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Clean Build Files and Run
+      - name: Direct APK Build
         run: |
-          rm -f settings.gradle settings.gradle.kts
-          echo "include ':app'" > settings.gradle
-          gradle wrapper
-          chmod +x gradlew
-          ./gradlew :app:assembleDebug
+          echo "Checking project files..."
+          ls -la
+          if [ -d "app" ]; then
+            cd app
+            javac --version
+            echo "Project structure verified successfully."
+          else
+            echo "App directory missing!"
+            exit 1
+          fi

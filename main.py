@@ -1,26 +1,29 @@
-name: Build Automation System
+import os
+import google.generativeai as genai
 
-on:
-  workflow_dispatch:
-  push:
-    branches: [ "main" ]
+# Configure the API key using the environment variable from GitHub Secrets
+api_key = os.environ.get("GEMINI_API_KEY")
+if not api_key:
+    raise ValueError("GEMINI_API_KEY environment variable is missing!")
 
-jobs:
-  run-ai-script:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+genai.configure(api_key=api_key)
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
+def generate_youtube_script():
+    # Using the latest stable approach for generating content
+    generation_config = {
+        "temperature": 0.7,
+        "max_output_tokens": 8192,
+    }
+    
+    # Selecting the reliable model for script generation
+    model = genai.GenerativeModel('gemini-1.5-flash', generation_config=generation_config)
+    
+    prompt = "Write a detailed, engaging, and professional 10-minute YouTube video script about deep sea mysteries for an international audience. Include catchy hooks and narration sections."
+    
+    print("=== START OF GENERATED SCRIPT ===")
+    response = model.generate_content(prompt)
+    print(response.text)
+    print("=== END OF GENERATED SCRIPT ===")
 
-    - name: Install Dependencies
-      run: pip install google-generativeai
-
-    - name: Run Main Script
-      env:
-        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      run: python3 main.py
+if __name__ == "__main__":
+    generate_youtube_script()

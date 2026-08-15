@@ -12,40 +12,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-
-    - name: Install Dependencies
-      run: pip install google-generativeai
-
-    - name: Run Python Script
+    - name: Run Direct API Request
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: |
-        python3 -c "
-        import google.generativeai as genai
-        import os
-        
-        genai.configure(api_key=os.environ['GEMINI_API_KEY'])
-        
-        try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            response = model.generate_content('Write a short engaging YouTube script about deep sea mysteries.')
-            print('=== START OF GENERATED SCRIPT ===')
-            print(response.text)
-            print('=== END OF GENERATED SCRIPT ===')
-        except Exception as e:
-            try:
-                model = genai.GenerativeModel('gemini-pro')
-                response = model.generate_content('Write a short engaging YouTube script about deep sea mysteries.')
-                print('=== START OF GENERATED SCRIPT ===')
-                print(response.text)
-                print('=== END OF GENERATED SCRIPT ===')
-            except Exception as e2:
-                print('Error occurred:', e2)
-        "
+        echo "=== START OF GENERATED SCRIPT ==="
+        curl -s "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$GEMINI_API_KEY" \
+        -H 'Content-Type: application/json' \
+        -d '{"contents":[{"parts":[{"text":"Write a short engaging YouTube script about deep sea mysteries."}]}]}'
+        echo ""
+        echo "=== END OF GENERATED SCRIPT ==="
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4

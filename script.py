@@ -8,7 +8,7 @@ if not api_key:
     print("Error: GEMINI_API_KEY is not set.")
     exit(1)
 
-url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={api_key}"
 headers = {'Content-Type': 'application/json'}
 
 data = {

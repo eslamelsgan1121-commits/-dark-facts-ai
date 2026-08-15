@@ -1,21 +1,59 @@
-name: Run Generator
+name: Automated System Build
+
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   workflow_dispatch:
+
 jobs:
-  run-script:
+  build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Generate Script
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          curl "" \
-          -H 'Content-Type: application/json' \
-          -X POST \
-          -d '{
-            "contents": [{
-              "parts":[{"text": "Write a 9-minute YouTube script for Daily Dark Facts about Space Mystery. Include a hook, body, 3 calls to subscribe, and 2 Short scripts."}]
-            }]
-          }'
+          python3 -c "
+          import urllib.request
+          import json
+          import os
+
+          api_key = os.environ.get('API_KEY')
+          url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}'
+          headers = {'Content-Type': 'application/json'}
+          data = {
+              'contents': [{
+                  'parts': [{'text': 'Act as a professional YouTube scriptwriter for a mystery channel. Write a high-quality, professional English script for a video about deep sea mysteries, pyramid secrets, pharaohs curse, space enigmas, or midnight thoughts. Output only the script text.'}]
+              }]
+          }
+
+          req = urllib.request.Request(url, data=json.dumps(data).encode('utf-8'), headers=headers, method='POST')
+          try:
+              with urllib.request.urlopen(req) as response:
+                  res = json.loads(response.read().decode('utf-8'))
+                  print('SUCCESS:', res['candidates'][0]['content']['parts'][0]['text'])
+          except Exception as e:
+              print('ERROR:', e)
+              exit(1)
+          "
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Android App
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/app-debug.apk

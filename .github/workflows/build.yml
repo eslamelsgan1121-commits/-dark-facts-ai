@@ -15,16 +15,17 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        
-      - name: Build APK using Gradle
+
+      - name: Fix Project Structure and Build
         run: |
-          chmod +x gradlew || true
-          if [ -f "gradlew" ]; then
-            ./gradlew assembleDebug
-          else
-            gradle wrapper
-            ./gradlew assembleDebug
+          # التأكد من وجود ملف إعدادات جذري لكي يتعرف Gradle على المشروع
+          if [ ! -f "settings.gradle" ] && [ ! -f "settings.gradle.kts" ]; then
+            echo "include ':app'" > settings.gradle
           fi
+          
+          # توليد الـ wrapper بقوة ودون أخطاء
+          gradle wrapper --gradle-version 8.0
+          
+          # إعطاء الصلاحيات والبناء
+          chmod +x gradlew
+          ./gradlew app:assembleDebug

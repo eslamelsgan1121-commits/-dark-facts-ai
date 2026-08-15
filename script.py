@@ -1,23 +1,29 @@
 import os
-import urllib.request
+import requests
 import json
 
-api_key = os.environ.get("GEMINI_API_KEY")
-url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+def generate_script():
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        print("Error: GEMINI_API_KEY is not set.")
+        return
 
-headers = {'Content-Type': 'application/json'}
-data = {
-    "contents": [{
-        "parts":[{"text": "Act as a professional YouTube scriptwriter for Daily Dark Facts. Write a mysterious script about Deep Sea Mysteries or Pyramid Secrets in English."}]
-    }]
-}
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    headers = {'Content-Type': 'application/json'}
+    payload = {
+        "contents": [{
+            "parts":[{"text": "Act as a professional YouTube scriptwriter for Daily Dark Facts. Write a mysterious script about Deep Sea Mysteries, Pyramid Secrets, Pharaohs Curse, Space Mysteries, or Midnight Thoughts. Provide the result in English."}]
+        }]
+    }
 
-req = urllib.request.Request(url, data=json.dumps(data).encode('utf-8'), headers=headers, method='POST')
+    try:
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        print("Script successfully generated!")
+        print(data['candidates'][0]['content']['parts'][0]['text'])
+    except Exception as e:
+        print(f"System Error: {e}")
 
-try:
-    with urllib.request.urlopen(req) as response:
-        result = json.loads(response.read().decode('utf-8'))
-        print("Script Generated Successfully:")
-        print(result)
-except Exception as e:
-    print(f"Error: {e}")
+if __name__ == "__main__":
+    generate_script()

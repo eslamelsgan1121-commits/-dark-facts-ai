@@ -18,23 +18,21 @@ jobs:
         python-version: '3.10'
 
     - name: Install Dependencies
-      run: pip install google-genai
+      run: pip install google-generativeai
 
     - name: Run Python Script
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: |
         python3 -c "
-        from google import genai
+        import google.generativeai as genai
         import os
         
-        client = genai.Client(api_key=os.environ['GEMINI_API_KEY'])
+        genai.configure(api_key=os.environ['GEMINI_API_KEY'])
         
         try:
-            response = client.models.generate_content(
-                model='gemini-2.5-flash',
-                contents='Write a short engaging YouTube script about deep sea mysteries.'
-            )
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            response = model.generate_content('Write a short engaging YouTube script about deep sea mysteries.')
             print('=== START OF GENERATED SCRIPT ===')
             print(response.text)
             print('=== END OF GENERATED SCRIPT ===')

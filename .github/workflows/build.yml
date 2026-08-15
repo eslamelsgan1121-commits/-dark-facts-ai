@@ -1,4 +1,4 @@
-name: Run Python Script
+name: Run Generator
 
 on:
   push:
@@ -9,20 +9,15 @@ jobs:
   run-script:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          pip install google-generativeai
-
-      - name: Run main.py script
+      - name: Generate Script via API
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          python main.py
+          curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$GEMINI_API_KEY" \
+          -H 'Content-Type: application/json' \
+          -X POST \
+          -d '{
+            "contents": [{
+              "parts":[{"text": "Write a 9-minute YouTube script about Space Secrets. Include a hook, three calls to subscribe, and two 30-second Short scripts at the end."}]
+            }]
+          }'

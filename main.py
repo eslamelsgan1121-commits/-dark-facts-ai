@@ -8,6 +8,7 @@ if not api_key:
 genai.configure(api_key=api_key)
 
 def generate_youtube_script():
+    # استخدام الموديل المستقر المعتمد لتجنب أي أخطاء 404
     model = genai.GenerativeModel("gemini-1.5-flash")
     
     prompt = "Write a detailed, engaging, and professional 10-minute YouTube video script about deep sea mysteries for an international audience."

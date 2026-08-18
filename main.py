@@ -12,7 +12,7 @@ def generate_youtube_script():
     
     print("=== بداية السكريبت ===")
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-1.5-flash",
         contents=prompt,
     )
     print(response.text)

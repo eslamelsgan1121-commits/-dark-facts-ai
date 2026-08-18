@@ -1,20 +1,19 @@
 import os
-from google import genai
+import google.generativeai as genai
 
 api_key = os.environ.get("GEMINI_API_KEY")
 if not api_key:
     raise ValueError("GEMINI_API_KEY environment variable is missing!")
 
+genai.configure(api_key=api_key)
+
 def generate_youtube_script():
-    client = genai.Client(api_key=api_key)
+    model = genai.GenerativeModel("gemini-1.5-flash")
     
     prompt = "Write a detailed, engaging, and professional 10-minute YouTube video script about deep sea mysteries for an international audience."
     
     print("=== بداية السكريبت ===")
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt,
-    )
+    response = model.generate_content(prompt)
     print(response.text)
     print("=== نهاية السكريبت ===")
 
